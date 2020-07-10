@@ -1,0 +1,42 @@
+---
+title: "Reading tabular data from HDF5"
+author: "Marc Paterno"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Reading tabular data from HDF5}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+library(h5tables)
+root <- rprojroot::is_r_package
+
+```
+
+The `h5tables` packages provides functions to read `tibbles` from *tabular HDF5 files*.
+
+A tabular HDF5 file is one that contains, at the top-level, on Groups,
+and in which each Group contains only Datasets.
+Within each Group, each Dataset is of the same length.
+Thus each Group represents a *table*, and each Dataset a *column* in a table.
+
+## Discovering what is in a file
+
+To list all the tables in a tabular HDF5 file, use `h5tables::table_names`:
+
+```{r}
+names <-table_names(root$find_file("inst/extdata/cms_two_events.h5"))
+names
+```
+
+
+## Reading tables
+
+Tables can be read *whole* (all columns, all rows),
+or by selecting the names of columns (some columns, all rows).

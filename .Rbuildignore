@@ -1,0 +1,7 @@
+^.*\.Rproj$
+^\.Rproj\.user$
+^bigcms.h5$
+^doc$
+^Meta$
+^\.travis\.yml$
+^inst/extdata/small\.h5caf\.h5$
