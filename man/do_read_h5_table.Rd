@@ -4,7 +4,7 @@
 \alias{do_read_h5_table}
 \title{do_read_h5_table}
 \usage{
-do_read_h5_table(h5f, tablename, first, last)
+do_read_h5_table(h5f, tablename, first, last, columns)
 }
 \arguments{
 \item{h5f}{an open H5File object.}
@@ -14,6 +14,8 @@ do_read_h5_table(h5f, tablename, first, last)
 \item{first}{index of the first row to read}
 
 \item{last}{index of the last row to read}
+
+\item{columns}{vector of column names to read; if NULL, read all columns}
 }
 \value{
 a tibble, created from the table.

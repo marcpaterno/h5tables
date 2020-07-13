@@ -13,6 +13,22 @@ test_that("reading tables names with a pattern work", {
   expect_equal(info_names, c("GenEvtInfo", "Info"))
 })
 
+test_that("reading columns names works", {
+  root <- rprojroot::is_r_package
+  filename <- root$find_file("inst/extdata/cms_two_events.h5")
+  columns <- column_names(filename, "GenEvtInfo")
+  expect_equal(columns, c("evtNum",
+                          "id_1",
+                          "id_2",
+                          "lumisec",
+                          "runNum",
+                          "scalePDF",
+                          "weight",
+                          "x_1",
+                          "x_2",
+                          "xs"))
+})
+
 test_that("reading a single whole dataset works", {
   root <- rprojroot::is_r_package
   filename <- root$find_file("inst/extdata/cms_two_events.h5")
@@ -74,6 +90,13 @@ test_that("reading part of a table works", {
   ak4s <-   read_h5_table(filename, "AK4Puppi", first = 2, last = 3)
   expect_s3_class(ak4s, "tbl_df")
   expect_equal(nrow(ak4s), 2L)
+})
 
+test_that("reading selected columns from a table works", {
+  root <- rprojroot::is_r_package
+  filename <- root$find_file("inst/extdata/cms_two_events.h5")
+  ak4s <-   read_h5_table(filename, "AK4Puppi", columns = c("area", "axis2", "nParticles"))
+  expect_s3_class(ak4s, "tbl_df")
+  expect_named(ak4s, c("area", "axis2", "nParticles"))
 })
 

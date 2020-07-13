@@ -4,23 +4,25 @@
 #' @param tablename The name of the table to be read.
 #' @param first first index to read; must be >= 1
 #' @param last last index to read; NULL means read to end of data; must be >= first
+#' @param columns vector of column names to read; if NULL, read all columns
 #'
 #' @return a tibble containing the data read from the named table.
 #' @export
 #'
-read_h5_table <- function(file, tablename, first = 1L, last = NULL)
+read_h5_table <- function(file, tablename, first = 1L, last = NULL, columns = NULL)
 {
   checkmate::assertCharacter(tablename, len = 1)
   checkmate::assertMultiClass(file, c("H5File","character"))
   checkmate::assert_count(first, positive = TRUE)
   checkmate::assert_count(last, positive = TRUE, null.ok = TRUE)
+  checkmate::assert_character(columns, null.ok = TRUE)
 
   if (is.character(file)) {
     file <- hdf5r::h5file(file, mode = "r")
     # We only close the file if we were responsible for opening it.
     on.exit(hdf5r::h5close(file), add = TRUE, after = FALSE)
   }
-  do_read_h5_table(file, tablename, first, last)
+  do_read_h5_table(file, tablename, first, last, columns)
 }
 
 #' Read a single dataset from an open group
@@ -49,14 +51,19 @@ read_dset_data <- function(group, name, first = 1L, last = NULL)
 #' @param tablename The name of the table to be read.
 #' @param first index of the first row to read
 #' @param last index of the last row to read
+#' @param columns vector of column names to read; if NULL, read all columns
 #'
 #' @return a tibble, created from the table.
 #'
-do_read_h5_table <- function(h5f, tablename, first, last)
+do_read_h5_table <- function(h5f, tablename, first, last, columns)
 {
   group <- h5f[[tablename]]
   on.exit(hdf5r::h5close(group), add = TRUE, after = FALSE)
-  dsetnames <- hdf5r::list.datasets(group, full.names = FALSE, recursive = FALSE)
+  if (is.null(columns)) {
+    dsetnames <- hdf5r::list.datasets(group, full.names = FALSE, recursive = FALSE)
+  } else {
+    dsetnames <- columns
+  }
   dsets     <- purrr::map(dsetnames, function(n){read_dset_data(group, n, first, last)})
   names(dsets) <- dsetnames
   res       <- tibble::as_tibble(data.frame(dsets))
@@ -87,4 +94,16 @@ table_names <- function(file, pattern = NULL)
   names
 }
 
+column_names <- function(file, tablename)
+{
+  checkmate::assertMultiClass(file, c("H5File","character"))
+  checkmate::assert_character(tablename, min.len = 1, max.len = 1)
+  if (is.character(file)) {
+    file <- hdf5r::h5file(file, "r")
+    on.exit(hdf5r::h5close(file), add = TRUE, after = FALSE)
+  }
+  group <- file[[tablename]]
+  on.exit(hdf5r::h5close(group), add = TRUE, after = FALSE)
+  hdf5r::list.datasets(group, full.names = FALSE, recursive = FALSE)
+}
 

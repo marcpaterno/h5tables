@@ -4,7 +4,7 @@
 \alias{read_h5_table}
 \title{Read a tibble from a tabular HDF5 file.}
 \usage{
-read_h5_table(file, tablename, first = 1L, last = NULL)
+read_h5_table(file, tablename, first = 1L, last = NULL, columns = NULL)
 }
 \arguments{
 \item{file}{an H5File object representing an HDF5 "tabular data" file, or the name of a file.}
@@ -14,6 +14,8 @@ read_h5_table(file, tablename, first = 1L, last = NULL)
 \item{first}{first index to read; must be >= 1}
 
 \item{last}{last index to read; NULL means read to end of data; must be >= first}
+
+\item{columns}{vector of column names to read; if NULL, read all columns}
 }
 \value{
 a tibble containing the data read from the named table.
