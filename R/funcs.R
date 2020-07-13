@@ -39,7 +39,7 @@ read_dset_data <- function(group, name, first = 1L, last = NULL)
   checkmate::assert_count(first, positive = TRUE)
   checkmate::assert_count(last, positive = TRUE, null.ok = TRUE)
   dset <- group[[name]]
-  if (is.null(last)) last <- dset$maxdims
+  if (is.null(last)) last <- tail(dset$dims, n=1)
   if (last < first) last <- first
   on.exit(hdf5r::h5close(dset), add = TRUE, after = FALSE)
   dset$read(args = list(first:last))
@@ -107,3 +107,15 @@ column_names <- function(file, tablename)
   hdf5r::list.datasets(group, full.names = FALSE, recursive = FALSE)
 }
 
+count_rows <- function(file, tablename)
+{
+  checkmate::assertMultiClass(file, c("H5File","character"))
+  checkmate::assert_character(tablename, min.len = 1, max.len = 1)
+  if (is.character(file)) {
+    file <- hdf5r::h5file(file, "r")
+    on.exit(hdf5r::h5close(file), add = TRUE, after = FALSE)
+  }
+  group <- file[[tablename]]
+  on.exit(hdf5r::h5close(group), add = TRUE, after = FALSE)
+  tail(group[[names(group)[1]]]$dims, n=1)
+}

@@ -29,6 +29,13 @@ test_that("reading columns names works", {
                           "xs"))
 })
 
+test_that("reading the number of rows in a table works", {
+  root <- rprojroot::is_r_package
+  filename <- root$find_file("inst/extdata/cms_two_events.h5")
+  nr <- count_rows(filename, "AK4Puppi")
+  expect_equal(nr, 5L)
+})
+
 test_that("reading a single whole dataset works", {
   root <- rprojroot::is_r_package
   filename <- root$find_file("inst/extdata/cms_two_events.h5")
