@@ -15,7 +15,7 @@ read_h5_table <- function(file, tablename)
     # We only close the file if we were responsible for opening it.
     on.exit(hdf5r::h5close(file), add = TRUE, after = FALSE)
   }
-  .read_h5_table(file, tablename)
+  do_read_h5_table(file, tablename)
 }
 
 #' Read a single dataset from an open group
@@ -32,14 +32,14 @@ read_dset_data <- function(group, name)
   hdf5r::readDataSet(dset)
 }
 
-#' .read_h5_table
+#' do_read_h5_table
 #'
 #' @param h5f an open H5File object.
 #' @param tablename The name of the table to be read.
 #'
 #' @return a tibble, created from the table.
 #'
-.read_h5_table <- function(h5f, tablename)
+do_read_h5_table <- function(h5f, tablename)
 {
   group <- h5f[[tablename]]
   on.exit(hdf5r::h5close(group), add = TRUE, after = FALSE)
