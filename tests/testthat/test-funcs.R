@@ -12,7 +12,7 @@ test_that("reading a single data set works", {
   file <- hdf5r::h5file(filename, mode = "r")
   on.exit(hdf5r::h5close(file), add = TRUE, after = FALSE)
   taus <- file[["Tau"]]
-  pt <- .read_dset_data(taus, "pt")
+  pt <- read_dset_data(taus, "pt")
   expect_equal(length(pt), 2L)
 })
 

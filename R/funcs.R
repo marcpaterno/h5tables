@@ -18,14 +18,14 @@ read_h5_table <- function(file, tablename)
   .read_h5_table(file, tablename)
 }
 
-#' .read_dset_data
+#' Read a single dataset from an open group
 #'
 #' @param group an open H5Group object.
 #' @param name the name of a dataset in the group.
 #'
 #' @return a vector containing the data that was read.
 #'
-.read_dset_data <- function(group, name)
+read_dset_data <- function(group, name)
 {
   dset <- group[[name]]
   on.exit(hdf5r::h5close(dset), add = TRUE, after = FALSE)
@@ -44,7 +44,7 @@ read_h5_table <- function(file, tablename)
   group <- h5f[[tablename]]
   on.exit(hdf5r::h5close(group), add = TRUE, after = FALSE)
   dsetnames <- hdf5r::list.datasets(group, full.names = FALSE, recursive = FALSE)
-  dsets     <- purrr::map(dsetnames, function(n){.read_dset_data(group, n)})
+  dsets     <- purrr::map(dsetnames, function(n){read_dset_data(group, n)})
   names(dsets) <- dsetnames
   res       <- tibble::as_tibble(data.frame(dsets))
   names(res) <- dsetnames
