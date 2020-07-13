@@ -4,14 +4,17 @@
 \alias{table_names}
 \title{Return the names of all tables in a tabular HDF5 file.}
 \usage{
-table_names(file)
+table_names(file, pattern = NULL)
 }
 \arguments{
 \item{file}{an H5File object representing an HDF5 "tabular data" file, or the name of such a file.}
+
+\item{pattern}{a regular expression to match against files; NULL if none is to be used}
 }
 \value{
 a vector (mode character) containing the names of the tables in the file.
 }
 \description{
-Return the names of all tables in a tabular HDF5 file.
+If a regular expression \code{pattern} is supplied, only the names matching that pattern
+are returned.
 }

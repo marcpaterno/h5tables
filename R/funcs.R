@@ -53,19 +53,25 @@ do_read_h5_table <- function(h5f, tablename)
 
 #' Return the names of all tables in a tabular HDF5 file.
 #'
+#' If a regular expression \code{pattern} is supplied, only the names matching that pattern
+#' are returned.
+#'
 #' @param file an H5File object representing an HDF5 "tabular data" file, or the name of such a file.
+#' @param pattern a regular expression to match against files; NULL if none is to be used
 #'
 #' @return a vector (mode character) containing the names of the tables in the file.
 #' @export
 #'
-table_names <- function(file)
+table_names <- function(file, pattern = NULL)
 {
   checkmate::assertMultiClass(file, c("H5File","character"))
   if (is.character(file)) {
     file <- hdf5r::h5file(file, "r")
     on.exit(hdf5r::h5close(file), add = TRUE, after = FALSE)
   }
-  hdf5r::list.groups(file)
+  names <- hdf5r::list.groups(file)
+  if(! is.null(pattern)) names <- grep(pattern, names, value = TRUE)
+  names
 }
 
 

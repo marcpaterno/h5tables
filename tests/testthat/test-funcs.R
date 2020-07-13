@@ -6,6 +6,13 @@ test_that("reading table names works", {
                c("AK4Puppi", "AddCA15Puppi", "CA15Puppi", "Electron", "GenEvtInfo", "Info", "Muon", "Photon", "Tau"))
 })
 
+test_that("reading tables names with a pattern work", {
+  root <- rprojroot::is_r_package
+  filename <- root$find_file("inst/extdata/cms_two_events.h5")
+  info_names <- table_names(filename, pattern = "Info$")
+  expect_equal(info_names, c("GenEvtInfo", "Info"))
+})
+
 test_that("reading a single data set works", {
   root <- rprojroot::is_r_package
   filename <- root$find_file("inst/extdata/cms_two_events.h5")
