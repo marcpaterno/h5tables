@@ -4,12 +4,16 @@
 \alias{read_dset_data}
 \title{Read a single dataset from an open group}
 \usage{
-read_dset_data(group, name)
+read_dset_data(group, name, first = 1L, last = NULL)
 }
 \arguments{
 \item{group}{an open H5Group object.}
 
 \item{name}{the name of a dataset in the group.}
+
+\item{first}{first index to read; must be >= 1}
+
+\item{last}{last index to read; NULL means read to end of data; must be >= first}
 }
 \value{
 a vector containing the data that was read.

@@ -4,12 +4,16 @@
 \alias{do_read_h5_table}
 \title{do_read_h5_table}
 \usage{
-do_read_h5_table(h5f, tablename)
+do_read_h5_table(h5f, tablename, first, last)
 }
 \arguments{
 \item{h5f}{an open H5File object.}
 
 \item{tablename}{The name of the table to be read.}
+
+\item{first}{index of the first row to read}
+
+\item{last}{index of the last row to read}
 }
 \value{
 a tibble, created from the table.

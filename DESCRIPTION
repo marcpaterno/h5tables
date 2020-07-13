@@ -1,7 +1,7 @@
 Package: h5tables
 Type: Package
 Title: Reading Tabular Data from HDF5
-Version: 0.0.0.999
+Version: 0.1.0
 Authors@R: "Marc Paterno <paterno@fnal.gov> [aut, cre]"
 Description: Reading of tabular HDF5 files into tibbles.
 License: MIT + file LICENSE

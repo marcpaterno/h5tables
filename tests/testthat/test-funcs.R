@@ -13,7 +13,7 @@ test_that("reading tables names with a pattern work", {
   expect_equal(info_names, c("GenEvtInfo", "Info"))
 })
 
-test_that("reading a single data set works", {
+test_that("reading a single whole dataset works", {
   root <- rprojroot::is_r_package
   filename <- root$find_file("inst/extdata/cms_two_events.h5")
   file <- hdf5r::h5file(filename, mode = "r")
@@ -23,9 +23,57 @@ test_that("reading a single data set works", {
   expect_equal(length(pt), 2L)
 })
 
+test_that("reading part of a dataset works", {
+  root <- rprojroot::is_r_package
+  filename <- root$find_file("inst/extdata/cms_two_events.h5")
+  file <- hdf5r::h5file(filename, mode = "r")
+  on.exit(hdf5r::h5close(file), add = TRUE, after = FALSE)
+  ak4 <- file[["AK4Puppi"]]
+  partonFlavor <- read_dset_data(ak4, "partonFlavor", 2, 3)
+  expect_equal(partonFlavor, c(21, 1))
+})
+
 test_that("reading a whole table works", {
   root <- rprojroot::is_r_package
   filename <- root$find_file("inst/extdata/cms_two_events.h5")
-  d <- read_h5_table(filename, "Muon")
-  expect_s3_class(d, "tbl_df")
+  taus <- read_h5_table(filename, "Tau")
+  expect_s3_class(taus, "tbl_df")
+  expect_named(taus, c("antiEleMVA5",
+                       "antiEleMVA5Cat",
+                       "dzLeadChHad",
+                       "e",
+                       "eta",
+                       "evtNum",
+                       "hpsDisc",
+                       "lumisec",
+                       "m",
+                       "nSignalChHad",
+                       "nSignalGamma",
+                       "phi",
+                       "pt",
+                       "puppiChHadIso",
+                       "puppiChHadIsoNoLep",
+                       "puppiGammaIso",
+                       "puppiGammaIsoNoLep",
+                       "puppiNeuHadIso",
+                       "puppiNeuHadIsoNoLep",
+                       "q",
+                       "rawIso3Hits",
+                       "rawIsoMVA3newDMwLT",
+                       "rawIsoMVA3newDMwoLT",
+                       "rawIsoMVA3oldDMwLT",
+                       "rawIsoMVA3oldDMwoLT",
+                       "rawMuonRejection",
+                       "runNum"))
+  expect_equal(taus$q, c(1,-1))
 })
+
+test_that("reading part of a table works", {
+  root <- rprojroot::is_r_package
+  filename <- root$find_file("inst/extdata/cms_two_events.h5")
+  ak4s <-   read_h5_table(filename, "AK4Puppi", first = 2, last = 3)
+  expect_s3_class(ak4s, "tbl_df")
+  expect_equal(nrow(ak4s), 2L)
+
+})
+
