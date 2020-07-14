@@ -42,7 +42,10 @@ read_dset_data <- function(group, name, first = 1L, last = NULL)
   if (is.null(last)) last <- tail(dset$dims, n=1)
   if (last < first) last <- first
   on.exit(hdf5r::h5close(dset), add = TRUE, after = FALSE)
-  dset$read(args = list(first:last))
+  if (length(dset$dims) == 1L)
+    dset$read(args = list(first:last))
+  else
+    dset$read(args = list(1, first:last))
 }
 
 #' do_read_h5_table
